@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: restaurant-backend
+    env: python
+    buildCommand: "pip install -r backend/requirements.txt && PYTHONPATH=backend python database/seed/seed_data.py"
+    startCommand: "cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.7
+      - key: SECRET_KEY
+        generateValue: true
+      - key: REFRESH_SECRET_KEY
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: '["https://*.vercel.app","https://*.vercel.dev","http://localhost:3000"]'
+      - key: DATABASE_URL
+        fromDatabase:
+          name: restaurant-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: restaurant-redis
+          property: connectionString
+
+databases:
+  - name: restaurant-db
+    databaseName: restaurant_db
+    user: restaurant_user
+
+services:
+  - type: redis
+    name: restaurant-redis
+    ipAllowList: []

@@ -1,0 +1,18 @@
+# Python & Virtualenv
+.venv/
+venv/
+myenv/
+__pycache__/
+*.pyc
+*.pyo
+restaurant_local.db
+
+# Node & Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# Environment Variables & OS
+.env
+.DS_Store
+*.log
