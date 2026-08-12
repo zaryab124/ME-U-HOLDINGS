@@ -1,12 +1,14 @@
 services:
   - type: web
     name: restaurant-backend
-    env: python
-    buildCommand: "pip install -r backend/requirements.txt && PYTHONPATH=backend python database/seed/seed_data.py"
+    runtime: python
+    plan: free
+    buildCommand: "pip install -r backend/requirements.txt"
+    preDeployCommand: "PYTHONPATH=backend python database/seed/seed_data.py"
     startCommand: "cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.7
+        value: "3.11.7"
       - key: SECRET_KEY
         generateValue: true
       - key: REFRESH_SECRET_KEY
@@ -19,16 +21,17 @@ services:
           property: connectionString
       - key: REDIS_URL
         fromService:
-          type: redis
+          type: keyvalue
           name: restaurant-redis
           property: connectionString
 
+  - type: keyvalue
+    name: restaurant-redis
+    plan: free
+    ipAllowList: []
+
 databases:
   - name: restaurant-db
+    plan: free
     databaseName: restaurant_db
     user: restaurant_user
-
-services:
-  - type: redis
-    name: restaurant-redis
-    ipAllowList: []
